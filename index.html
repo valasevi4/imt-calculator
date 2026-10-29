@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#10251f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ИМТ">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<title>ИМТ — калькулятор</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1714;--panel:#142520;--panel2:#1a3029;--text:#f2f7f4;--muted:#a6bbb1;--accent:#a7f3c3;--line:#2a443a}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#1b3a2e 0%,var(--bg) 52%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100svh;padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom)}
+main{max-width:430px;margin:0 auto;padding:22px 0 30px}
+header{display:flex;align-items:center;gap:12px;margin:4px 0 22px}
+.logo{width:48px;height:48px;border-radius:16px;background:linear-gradient(145deg,#b6f6cf,#5ecb91);display:grid;place-items:center;color:#10251f;font-weight:900;font-size:21px;box-shadow:0 8px 25px #0003}
+h1{font-size:23px;line-height:1.1;margin:0 0 5px;letter-spacing:-.5px}
+.sub{font-size:13px;color:var(--muted)}
+.card{background:linear-gradient(150deg,#182c25,#12211c);border:1px solid var(--line);border-radius:24px;padding:20px;margin-bottom:14px;box-shadow:0 12px 35px #0002}
+label{display:block;color:var(--muted);font-size:13px;margin-bottom:9px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{background:#0c1915;border:1px solid var(--line);border-radius:16px;padding:13px 14px}
+.field input{width:100%;background:transparent;border:0;outline:0;color:var(--text);font-size:27px;font-weight:650;min-width:0;padding:0}
+.unit{font-size:12px;color:var(--muted);margin-top:4px}
+button{border:0;border-radius:15px;background:var(--accent);color:#10251f;font-size:16px;font-weight:750;padding:15px;width:100%;margin-top:14px;cursor:pointer}
+.result-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.result-label{font-size:13px;color:var(--muted)}
+.number{font-size:54px;letter-spacing:-2px;font-weight:750;line-height:1.15;margin:7px 0}
+.pill{display:inline-block;padding:7px 11px;border-radius:99px;font-size:12px;font-weight:700;background:#274536;color:#baf4ce}
+.scale{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:20px 0 8px}
+.segment{height:7px;border-radius:10px;background:#40564b;opacity:.75}
+.segment:nth-child(1){background:#6db7f0}.segment:nth-child(2){background:#8ee3ad}.segment:nth-child(3){background:#f2ca72}.segment:nth-child(4){background:#f08b80}
+.marker-wrap{height:14px;position:relative}
+.marker{position:absolute;top:0;left:0;width:3px;height:12px;border-radius:4px;background:white;box-shadow:0 0 0 3px #ffffff25;transform:translateX(-50%);transition:left .2s}
+.scale-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;margin-top:4px}
+.note{font-size:13px;line-height:1.5;color:var(--muted);margin:14px 0 0}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
+.stat{background:#0d1b16;border:1px solid var(--line);border-radius:15px;padding:13px}
+.stat .k{font-size:12px;color:var(--muted);margin-bottom:6px}
+.stat .v{font-size:18px;font-weight:700}
+.section-title{font-size:16px;font-weight:700;margin:0 0 12px}
+.range{height:8px;background:linear-gradient(90deg,#6db7f0,#8ee3ad,#f2ca72,#f08b80);border-radius:99px;margin:14px 0 7px}
+.range-caption{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+footer{text-align:center;font-size:11px;line-height:1.5;color:#7f988c;padding:6px 8px 0}
+@media(max-width:350px){main{padding-top:14px}.card{padding:16px}.number{font-size:48px}.field input{font-size:24px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div class="logo">ИМТ</div>
+  <div><h1>Калькулятор ИМТ</h1><div class="sub">Индекс массы тела · для взрослых</div></div>
+</header>
+<section class="card">
+  <div class="fields">
+    <div class="field"><label for="weight">Вес</label><input id="weight" type="number" inputmode="decimal" min="20" max="350" step="0.1" value="107"><div class="unit">килограммы, кг</div></div>
+    <div class="field"><label for="height">Рост</label><input id="height" type="number" inputmode="decimal" min="100" max="250" step="1" value="182"><div class="unit">сантиметры, см</div></div>
+  </div>
+  <button id="calc">Рассчитать ИМТ</button>
+</section>
+<section class="card" aria-live="polite">
+  <div class="result-top"><div class="result-label">ВАШ ИНДЕКС МАССЫ ТЕЛА</div><span class="pill" id="category">Избыточная масса</span></div>
+  <div class="number" id="bmi">32,3</div>
+  <div class="scale"><div class="segment"></div><div class="segment"></div><div class="segment"></div><div class="segment"></div></div>
+  <div class="marker-wrap"><div class="marker" id="marker"></div></div>
+  <div class="scale-labels"><span>Недостаток</span><span>Норма</span><span>Избыток</span><span>Ожирение</span></div>
+  <p class="note" id="explain">ИМТ выше рекомендуемого диапазона. Это ориентировочный показатель, а не диагноз.</p>
+  <div class="stats">
+    <div class="stat"><div class="k">Вес для ИМТ 18,5</div><div class="v" id="minWeight">61,3 кг</div></div>
+    <div class="stat"><div class="k">Вес для ИМТ 24,9</div><div class="v" id="maxWeight">82,5 кг</div></div>
+  </div>
+</section>
+<section class="card">
+  <h2 class="section-title">Как читать результат</h2>
+  <div class="range"></div>
+  <div class="range-caption"><span>18,5</span><span>24,9</span><span>29,9</span><span>30+</span></div>
+  <p class="note">Для взрослых: ниже 18,5 — недостаточная масса; 18,5–24,9 — нормальная; 25,0–29,9 — избыточная; от 30,0 — ожирение.</p>
+  <p class="note">ИМТ не различает жировую и мышечную массу. Оценивайте его вместе с окружностью талии, состоянием здоровья и другими клиническими данными.</p>
+</section>
+<footer>Расчёт: вес (кг) ÷ рост² (м). Не предназначен для детей, подростков и беременных.</footer>
+</main>
+<script>
+const weight = document.getElementById('weight');
+const height = document.getElementById('height');
+const bmiEl = document.getElementById('bmi');
+const catEl = document.getElementById('category');
+const explainEl = document.getElementById('explain');
+const marker = document.getElementById('marker');
+const minEl = document.getElementById('minWeight');
+const maxEl = document.getElementById('maxWeight');
+const fmt = n => n.toLocaleString('ru-RU',{minimumFractionDigits:1,maximumFractionDigits:1});
+function calculate(){
+  const w = Number(String(weight.value).replace(',','.'));
+  const hcm = Number(String(height.value).replace(',','.'));
+  if(!w || !hcm || w<20 || w>350 || hcm<100 || hcm>250){
+    bmiEl.textContent='—';catEl.textContent='Проверьте данные';
+    explainEl.textContent='Введите вес от 20 до 350 кг и рост от 100 до 250 см.';
+    marker.style.left='0%';minEl.textContent='—';maxEl.textContent='—';return;
+  }
+  const h=hcm/100, bmi=w/(h*h);
+  bmiEl.textContent=fmt(bmi);
+  let category, explanation;
+  if(bmi<18.5){category='Недостаток массы';explanation='ИМТ ниже рекомендуемого диапазона. При непреднамеренном снижении веса стоит обсудить это с врачом.'}
+  else if(bmi<25){category='Нормальная масса';explanation='ИМТ находится в рекомендуемом диапазоне для взрослых.'}
+  else if(bmi<30){category='Избыточная масса';explanation='ИМТ выше рекомендуемого диапазона. Полезно учитывать также окружность талии и состав тела.'}
+  else if(bmi<35){category='Ожирение I степени';explanation='ИМТ соответствует ожирению I степени по классификации ВОЗ для взрослых.'}
+  else if(bmi<40){category='Ожирение II степени';explanation='ИМТ соответствует ожирению II степени по классификации ВОЗ для взрослых.'}
+  else {category='Ожирение III степени';explanation='ИМТ соответствует ожирению III степени по классификации ВОЗ для взрослых.'}
+  catEl.textContent=category;explainEl.textContent=explanation;
+  minEl.textContent=fmt(18.5*h*h)+' кг';maxEl.textContent=fmt(24.9*h*h)+' кг';
+  // Display scale: BMI 15–40, with a visible clamp at both ends.
+  marker.style.left=(Math.max(0,Math.min(100,(bmi-15)/25*100)))+'%';
+}
+document.getElementById('calc').addEventListener('click',calculate);
+weight.addEventListener('input',calculate);height.addEventListener('input',calculate);
+calculate();
+</script>
+<script>if ('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));</script>
+</body>
+</html>
